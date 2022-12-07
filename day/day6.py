@@ -1,3 +1,6 @@
+from timer import time
+
+@time
 def solve():
     sequence = ""
     with open("../inputs/day6.txt") as f:
