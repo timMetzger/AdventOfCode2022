@@ -45,7 +45,6 @@ def solve():
                             current = current[path_component]
                             current["acc"] += int(size)
 
-    print(files)
     # Part 1
     counter = 0
     def recurse(d):
