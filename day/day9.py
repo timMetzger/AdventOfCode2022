@@ -33,9 +33,18 @@ def move_tail(head,tail):
                 tail[1] += dy
                 break
 
+def update_chain(knots):
+    i = 0
+    while i < len(knots)-1:
+        head = knots[i]
+        tail = knots[i+1]
+        if not touching(head,tail):
+            move_tail(head,tail)
+
+        i += 1
 
 def solve():
-    KNOTS = 2
+    KNOTS = 10
     visited = set()
     knots = [[0,0] for _ in range(KNOTS)]
     visited.add(tuple(knots[-1]))
@@ -49,36 +58,33 @@ def solve():
             if direction == "R":
                 while distance > 0:
                     knots[0][1] += 1
-                    if not touching(knots[0],tail):
-                        move_tail(knots[0],tail)
-                        visited.add(tuple(tail))
+                    update_chain(knots)
+                    visited.add(tuple(knots[-1]))
                     distance -= 1
 
             elif direction == "L":
                 while distance > 0:
                     knots[0][1] -= 1
-                    if not touching(knots[0],tail):
-                        move_tail(knots[0],tail)
-                        visited.add(tuple(tail))
+                    update_chain(knots)
+                    visited.add(tuple(knots[-1]))
                     distance -= 1
 
             elif direction == "U":
                 while distance > 0:
                     knots[0][0] += 1
-                    if not touching(knots[0],tail):
-                        move_tail(knots[0],tail)
-                        visited.add(tuple(tail))
+                    update_chain(knots)
+                    visited.add(tuple(knots[-1]))
                     distance -= 1
 
             elif direction == "D":
                 while distance > 0:
                     knots[0][0] -= 1
-                    if not touching(knots[0],tail):
-                        move_tail(knots[0],tail)
-                        visited.add(tuple(tail))
+
+                    update_chain(knots)
+                    visited.add(tuple(knots[-1]))
                     distance -= 1
 
-    print("Part 1: ",len(visited))
+    print("Part 2: ",len(visited))
 
 
 
