@@ -8,43 +8,44 @@
 #    if lists are the same length and no comparison decides continue on
 # 3: if exactly one value is an integer convert that to a list and retry
 
+# 1 is valid
+# -1 is invalid
+# 0 is unknown
+def compare_ints(a,b):
+    if a < b:
+        return 1
+    elif a > b:
+        return -1
+    else:
+        return 0
+
 
 def compare_lists(a,b):
-    if len(b) == len(a) == 0:
-        return False
-
-    # if len(a) > 0 and type(a[0]) == list:
-    #     return compare_lists(a[0],b)
-    # elif len(b) > 0 and type(b[0]) == list:
-    #     return compare_lists(a, b[0])
-
-
-    if len(b) > 0 and len(a) == 0:
-        return True
-
-
+    valid = 0
 
     for i in range(len(a)):
         if i >= len(b):
-            return False
+            break
 
         if type(a[i]) == type(b[i]) == int:
-            if a[i] > b[i]:
-                return False
-            elif a[i] < b[i] and i == len(b)-1:
-                return True
-        elif type(a[i]) == type(b[i]) == list:
-            if not compare_lists(a[i],b[i]):
-                return False
+            valid = compare_ints(a[i],b[i])
+        elif type(a[i]) == list and type(b[i]) == list:
+            valid = compare_lists(a[i],b[i])
         elif type(a[i]) == int and type(b[i]) == list:
-            if not compare_lists([a[i]],b[i]):
-                return False
+            valid = compare_lists([a[i]],b[i])
         elif type(a[i]) == list and type(b[i]) == int:
-            if not compare_lists(a[i],[b[i]]):
-                return False
+            valid = compare_lists(a[i],[b[i]])
 
+        if valid == 1 or valid == -1:
+            break
 
-    return True
+    if not valid:
+        if len(a) < len(b):
+            valid = 1
+        elif len(a) > len(b):
+            valid = -1
+
+    return valid
 
 def solve():
     pairs = []
@@ -57,38 +58,36 @@ def solve():
             f.readline()
             line = f.readline()
 
-
     for k,pair in enumerate(pairs,start=1):
-        correct_flag = True
-        a = pair[0]
-        b = pair[1]
-        for i in range(len(pair[0])):
-            if i >= len(b):
-                correct_flag = False
-                break
-
-            if type(a[i]) == int and type(b[i]) == list:
-                if not compare_lists([a[i]],b[i]):
-                    correct_flag = False
-                    break
-            elif type(b[i]) == int and type(a[i]) == list:
-                if not compare_lists(a[i],[b[i]]):
-                    correct_flag = False
-                    break
-            elif type(a[i]) == type(b[i]) == int:
-                if not compare_lists([a[i]],[b[i]]):
-                    correct_flag = False
-                    break
-            else:
-                if not compare_lists(a[i],b[i]):
-                    correct_flag = False
-                    break
-
-
-        if correct_flag:
+        a,b = pair
+        if compare_lists(a,b) == 1:
             correct.append(k)
 
     print("Part 1: ",sum(correct))
 
+
+
+    # Need to sort the pairs such that the whole list is valid
+    packets = []
+    for pair in pairs:
+        packets.extend([*pair])
+
+
+    packets.append([[2]])
+    packets.append([[6]])
+
+    # Naive approach would be to sort this using bublesort
+    while True:
+        swap = False
+        for i in range(len(packets) - 1):
+            if compare_lists(packets[i],packets[i+1]) != 1:
+                packets[i], packets[i+1] = packets[i+1],packets[i]
+                swap = True
+
+        if not swap:
+            break
+
+
+    print("Part 2: ",(packets.index([[2]])+1)*(packets.index([[6]])+1))
 if __name__ == "__main__":
     solve()
