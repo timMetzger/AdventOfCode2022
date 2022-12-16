@@ -76,7 +76,7 @@ def solve():
     packets.append([[2]])
     packets.append([[6]])
 
-    # Naive approach would be to sort this using bublesort
+    # Naive approach would be to sort this using bubblesort
     while True:
         swap = False
         for i in range(len(packets) - 1):
